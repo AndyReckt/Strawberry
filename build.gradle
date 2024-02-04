@@ -9,8 +9,6 @@ plugins {
 group = 'me.andyreckt'
 version = '1.0-SNAPSHOT'
 
-mainClassName = 'me.andyreckt.strawberry.Main'
-
 idea {
     module {
         downloadJavadoc = true
