@@ -4,9 +4,12 @@ plugins {
     id 'maven-publish'
     id 'org.ajoberstar.grgit' version "5.2.1"
     id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "application"
 }
 group = 'me.andyreckt'
 version = '1.0-SNAPSHOT'
+
+mainClassName = 'me.andyreckt.strawberry.Main'
 
 idea {
     module {
