@@ -1,19 +1,65 @@
 plugins {
+    id 'idea'
     id 'java'
+    id 'maven-publish'
+    id 'org.ajoberstar.grgit' version "5.2.1"
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
-
 group = 'me.andyreckt'
 version = '1.0-SNAPSHOT'
 
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
 repositories {
-    mavenCentral()
+    maven {
+        url 'https://repo.mincats.eu/mirrors'
+    }
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    implementation 'com.github.Carleslc.Simple-YAML:Simple-Yaml:1.8.4'
 }
 
-test {
-    useJUnitPlatform()
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+jar {
+    classifier = 'jar'
+}
+
+shadowJar {
+    classifier = ''
+
+    relocate "org.yaml", "me.andyreckt.strawberry.yaml"
+    relocate "org.simpleyaml", "me.andyreckt.strawberry.simpleyaml"
+}
+
+publishing {
+    repositories {
+        maven {
+            name 'mincatsRepo'
+            url 'https://repo.mincats.eu/public'
+            credentials(PasswordCredentials)
+        }
+    }
+
+    publications {
+        shadow(MavenPublication) { publication ->
+            groupId "me.andyreckt"
+            artifactId 'strawberry'
+            version "1.0.0"
+
+            publication.artifact shadowJar
+        }
+    }
 }
