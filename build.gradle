@@ -58,7 +58,7 @@ publishing {
         shadow(MavenPublication) { publication ->
             groupId "me.andyreckt"
             artifactId 'strawberry'
-            version "1.0.0"
+            version "1.0.1"
 
             publication.artifact shadowJar
         }

@@ -109,7 +109,7 @@ public abstract class Strawberry {
 
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
-    protected @interface Config {
+    public @interface Config {
         String path();
         String comment() default "";
     }
