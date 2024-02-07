@@ -21,7 +21,7 @@ public abstract class Strawberry {
 
     private final YamlFile yamlFile;
 
-    private final Map<Class<?>, StrawberryTypeAdapter<?,?>> typeAdapters = new HashMap<>();
+    public static final Map<Class<?>, StrawberryTypeAdapter<?,?>> ADAPTER_MAP = new HashMap<>();
 
     public Strawberry(String path) {
         this(new File(path));
@@ -39,17 +39,22 @@ public abstract class Strawberry {
     }
 
     private void defaultTypeAdapters() {
-        typeAdapters.put(String.class, PrimitiveTypeAdapters.STRING);
-        typeAdapters.put(Integer.class, PrimitiveTypeAdapters.INTEGER);
-        typeAdapters.put(int.class, PrimitiveTypeAdapters.INTEGER);
-        typeAdapters.put(Long.class, PrimitiveTypeAdapters.LONG);
-        typeAdapters.put(long.class, PrimitiveTypeAdapters.LONG);
-        typeAdapters.put(Double.class, PrimitiveTypeAdapters.DOUBLE);
-        typeAdapters.put(double.class, PrimitiveTypeAdapters.DOUBLE);
-        typeAdapters.put(Float.class, PrimitiveTypeAdapters.FLOAT);
-        typeAdapters.put(float.class, PrimitiveTypeAdapters.FLOAT);
-        typeAdapters.put(Boolean.class, PrimitiveTypeAdapters.BOOLEAN);
-        typeAdapters.put(boolean.class, PrimitiveTypeAdapters.BOOLEAN);
+        ADAPTER_MAP.putIfAbsent(String.class, PrimitiveTypeAdapters.STRING);
+        ADAPTER_MAP.putIfAbsent(Integer.class, PrimitiveTypeAdapters.INTEGER);
+        ADAPTER_MAP.putIfAbsent(int.class, PrimitiveTypeAdapters.INTEGER);
+        ADAPTER_MAP.putIfAbsent(Long.class, PrimitiveTypeAdapters.LONG);
+        ADAPTER_MAP.putIfAbsent(long.class, PrimitiveTypeAdapters.LONG);
+        ADAPTER_MAP.putIfAbsent(Double.class, PrimitiveTypeAdapters.DOUBLE);
+        ADAPTER_MAP.putIfAbsent(double.class, PrimitiveTypeAdapters.DOUBLE);
+        ADAPTER_MAP.putIfAbsent(Float.class, PrimitiveTypeAdapters.FLOAT);
+        ADAPTER_MAP.putIfAbsent(float.class, PrimitiveTypeAdapters.FLOAT);
+        ADAPTER_MAP.putIfAbsent(Boolean.class, PrimitiveTypeAdapters.BOOLEAN);
+        ADAPTER_MAP.putIfAbsent(boolean.class, PrimitiveTypeAdapters.BOOLEAN);
+        ADAPTER_MAP.putIfAbsent(List.class, PrimitiveTypeAdapters.LIST);
+    }
+
+    public static void registerTypeAdapter(Class<?> type, StrawberryTypeAdapter<?, ?> adapter) {
+        ADAPTER_MAP.put(type, adapter);
     }
 
     private void load() throws IllegalAccessException {
@@ -64,7 +69,7 @@ public abstract class Strawberry {
 
             Config config = field.getAnnotation(Config.class);
             Class<?> type = field.getType();
-            StrawberryTypeAdapter adapter = typeAdapters.get(type);
+            StrawberryTypeAdapter adapter = ADAPTER_MAP.get(type);
 
             if (adapter == null) {
                 throw new IllegalArgumentException("No adapter found for type " + type.getName());

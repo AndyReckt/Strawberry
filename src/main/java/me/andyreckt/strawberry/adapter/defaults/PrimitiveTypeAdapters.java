@@ -4,6 +4,8 @@ import lombok.experimental.UtilityClass;
 import me.andyreckt.strawberry.adapter.StrawberryStringTypeAdapter;
 import me.andyreckt.strawberry.adapter.StrawberryTypeAdapter;
 
+import java.util.List;
+
 @UtilityClass
 public class PrimitiveTypeAdapters {
     public StrawberryStringTypeAdapter<String> STRING = new StrawberryStringTypeAdapter<String>() {
@@ -74,6 +76,18 @@ public class PrimitiveTypeAdapters {
 
         @Override
         public Boolean serialize(Boolean value) {
+            return value;
+        }
+    };
+
+    public StrawberryTypeAdapter<List<?>, List<?>> LIST = new StrawberryTypeAdapter<List<?>, List<?>>() {
+        @Override
+        public List<?> deserialize(List<?> input) {
+            return input;
+        }
+
+        @Override
+        public List<?> serialize(List<?> value) {
             return value;
         }
     };
