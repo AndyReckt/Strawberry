@@ -79,7 +79,28 @@ public abstract class Strawberry {
             if (value == null) {
                 value = field.get(this);
 
-                yamlFile.set(config.path(), adapter.serialize(value));
+                if (value instanceof Map) {
+                    Map map = (Map) value;
+
+                    if (map.isEmpty()) {
+                        continue;
+                    }
+
+                    Map.Entry entry = (Map.Entry) map.entrySet().stream().findFirst().get();
+
+                    StrawberryTypeAdapter keyAdapter = ADAPTER_MAP.get(entry.getKey().getClass());
+                    StrawberryTypeAdapter valueAdapter = ADAPTER_MAP.get(entry.getValue().getClass());
+
+                    if (keyAdapter == null) {
+                        throw new IllegalArgumentException("No adapter found for type " + entry.getKey().getClass().getName());
+                    }
+
+                    if (valueAdapter == null) {
+                        throw new IllegalArgumentException("No adapter found for type " + entry.getValue().getClass().getName());
+                    }
+
+                    map.forEach((key, value1) -> yamlFile.set(config.path() + "." + keyAdapter.serialize(key), valueAdapter.serialize(value1)));
+                } else yamlFile.set(config.path(), adapter.serialize(value));
 
                 if (!config.comment().isEmpty()) {
                     yamlFile.setComment(config.path(), config.comment(), getCommentFormat());
